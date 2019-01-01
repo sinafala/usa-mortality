@@ -264,8 +264,8 @@ dir.create("./example-data")
 # download the usa mortality zip file 
 output.file <- "./example-data/USA-lifetables.zip"
 unzip.dir <- "./example-data"
-usa.user <- "<your usa.mortality.org user name>"
-usa.pass <- "<your usa.mortality.org password>"
+usa.user <- "sam@samclark.net"
+usa.pass <- "neuQ^i7,7n^Nx8uEDY*2"
 usa.lts.download <- download.usa(output.file,unzip.dir,usa.user,usa.pass)
 
 # parse the raw 1x1 (single year of age and single calendar year) life tables into a list
