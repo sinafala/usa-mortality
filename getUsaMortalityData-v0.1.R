@@ -1,4 +1,4 @@
-# getUsaMortalityData.R Version 0
+# getUsaMortalityData.R Version 0.1
 
 # Sam Clark
 # License GPL3
@@ -221,11 +221,9 @@ extractLtCol <- function (lts.list,sex,col.name) {
   for (region in 1:length(lts)) {
     # loop over subregions
     for (subregion in 1:length(lts[[region]])) {
-      # # loop over sexes
-      # for (sex in 1:length(lts[[region]][[subregion]])) {
       # loop over periods
       for (period in 1:length(lts[[region]][[subregion]][[sex]])) {
-        # store the desirec column in the output matrix
+        # store the desired column in the output matrix
         if (col > 4) {
           # numeric columns
           lts.colmat[,col.index] <- as.numeric(unlist(lts[[region]][[subregion]][[sex]][[period]][,col]))
@@ -236,11 +234,9 @@ extractLtCol <- function (lts.list,sex,col.name) {
         # store the region, subregion, sex, and period 
         region.chr <- names(lts)[region]
         subregion.chr <- names(lts[[region]])[subregion]
-        # sex.chr <- names(lts[[region]][[subregion]])[sex]
         # keep just the period part of the period name
         period.chr <- str_sub(names(lts[[region]][[subregion]][[sex]])[period],5)
         # add the column identifier for the output matrix to the list vector of column names
-        # col.names[col.index] <- paste(region.chr,subregion.chr,sex.chr,period.chr,sep=".")
         col.names[col.index] <- paste(region.chr,subregion.chr,sex,period.chr,sep=".")
         # increment the output matrix column counter
         col.index <- col.index + 1          
@@ -248,6 +244,7 @@ extractLtCol <- function (lts.list,sex,col.name) {
       # }
     }
   }
+  # name the columns of the output matrix
   colnames(lts.colmat) <- col.names
   # set the output matrix row names to the age groups
   rownames(lts.colmat) <- unlist(lts[[1]][[1]][[1]][[1]][,4])
@@ -269,8 +266,8 @@ dir.create("./example-data")
 # download the usa mortality zip file 
 output.file <- "./example-data/USA-lifetables.zip"
 unzip.dir <- "./example-data"
-usa.user <- "sam@samclark.net"
-usa.pass <- "neuQ^i7,7n^Nx8uEDY*2"
+usa.user <- "<usa.mortality.org user name>"
+usa.pass <- "<usa.mortality.org password>"
 usa.lts.download <- download.usa(output.file,unzip.dir,usa.user,usa.pass)
 
 # parse the raw 1x1 (single year of age and single calendar year) life tables into a list
