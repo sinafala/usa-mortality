@@ -5,4 +5,4 @@ R code to
 * read and parse the desired life table type into an R list
 * extract a given column from all the sex-specific life tables and store them in a numeric matrix
 
-Code and examples in getUsaMortalityData.R
+Code and examples in **getUsaMortalityData.R**
