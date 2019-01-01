@@ -1,3 +1,5 @@
+# getUsaMortalityData.R Version 0
+
 # Sam Clark
 # License GPL3
 # 2018-12-31
@@ -35,8 +37,11 @@ download.usa <- function (output.file,unzip.dir,usa.user,usa.pass) {
   
   url <- "https://usa.mortality.org/uploads/lifetables/lifetables.zip"
   print("Downloading USA ...")
-  usa.zip <- try(GET(url,authenticate(usa.user,usa.pass),write_disk(output.file,overwrite=TRUE)
-                     ,progress(),show.error.messages=FALSE))
+  usa.zip <- try(GET(
+    url,authenticate(usa.user,usa.pass)
+    ,write_disk(output.file,overwrite=TRUE)
+    ,progress(),show.error.messages=FALSE
+  ))
   if(class(usa.zip)=="try-error") {
     return(usa.zip)
     stop(attributes(usa.zip)$condition)
@@ -51,7 +56,6 @@ download.usa <- function (output.file,unzip.dir,usa.user,usa.pass) {
   } 
   unzip(zipfile=output.file,exdir=unzip.dir)
   return(usa.zip)
-  
 }
 
 ##########################################
@@ -67,7 +71,7 @@ readUsaLts <- function(age.period,data.dir) {
   #   age, the age aggregation you input, e.g. '1' or '5'
   #   lts.read, the total life tables read
   
-  # extract the age identifier form the age.period argument
+  # extract the age identifier from the age.period argument
   age <- str_sub(age.period,1,1)
   # set the number of age groups
   if (age=="1") {
@@ -161,7 +165,8 @@ extractLtCol <- function (lts.list,sex,col.name) {
   } else if (lts.list$age == 5) {
     ages <- 24
   } else {
-    ages <- NA
+    # stop if invalid age
+    stop("Invalid 'age' argument")
   }
   
   # set the column number of the desired column
@@ -196,7 +201,7 @@ extractLtCol <- function (lts.list,sex,col.name) {
   # extract the life tables from the input list
   lts <- lts.list$lts
   
-  # store the nubmer of life tables for one sex (sexes={"f","m","b"})
+  # store the number of life tables for one sex (sexes={"f","m","b"})
   lts.count <- lts.list$lts.read/3
   
   # initilize the output matrix
