@@ -3,6 +3,7 @@
 # Sam Clark
 # License GPL3
 # 2018-12-31
+# 2019-09-09
 
 # clear things out
 rm(list=ls())
@@ -19,9 +20,7 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 if(length(new.packages)) install.packages(new.packages)
 
 # load necessary packages
-library(readr)
-library(stringr)
-library(httr)
+lapply(list.of.packages, require, character.only = TRUE)
 
 ##########################################################
 # function to download zip file containing USA life tables
@@ -266,8 +265,8 @@ dir.create("./example-data")
 # download the usa mortality zip file 
 output.file <- "./example-data/USA-lifetables.zip"
 unzip.dir <- "./example-data"
-usa.user <- "<usa.mortality.org user name>"
-usa.pass <- "<usa.mortality.org password>"
+usa.user <- "<username>"
+usa.pass <- "<password>"
 usa.lts.download <- download.usa(output.file,unzip.dir,usa.user,usa.pass)
 
 # parse the raw 1x1 (single year of age and single calendar year) life tables into a list
