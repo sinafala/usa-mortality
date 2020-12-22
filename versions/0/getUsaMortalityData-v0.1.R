@@ -1,8 +1,9 @@
-# getUsaMortalityData.R Version 0.0
+# getUsaMortalityData.R
 
 # Sam Clark
 # License GPL3
-# 2018-12-31
+# 2018-12-31: Version 0.0
+# 2020-12-21: Version 0.1
 
 # clear things out
 rm(list=ls())
@@ -22,9 +23,9 @@ if(length(new.packages)) install.packages(new.packages)
 suppressMessages(paste(list.of.packages,lapply(list.of.packages, require, character.only=T),sep=": "))
 
 
-##########################################################
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # function to download zip file containing USA life tables
-##########################################################
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 download.usa <- function (output.file,unzip.dir,usa.user,usa.pass) {
   
   # output.file is name of file to be created when the zip file is unzipped
@@ -57,12 +58,13 @@ download.usa <- function (output.file,unzip.dir,usa.user,usa.pass) {
   return(usa.zip)
 }
 
-##########################################
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # function to read life tables into a list
-##########################################
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 readUsaLts <- function(age.period,data.dir) {
   
-  # age.period is the agexperiod aggregation you want, e.g. '1x1' or '5x5'
+  # age.period is the age X period aggregation you want, e.g. '1x1' or '5x5'
   # data.dir is the directory where you unzipped the zip file downloaded from usa.mortality.org
   
   # return: a list containing
@@ -129,10 +131,11 @@ readUsaLts <- function(age.period,data.dir) {
   )
 }
 
-#############################################################
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # function to extract a specified column from all life tables 
 #   and store the results in a single numeric matrix
-#############################################################
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 extractLtCol <- function (lts.list,sex,col.name) {
   
   # lts.list is a list object returned by the function readUsaLts()
@@ -254,9 +257,10 @@ extractLtCol <- function (lts.list,sex,col.name) {
   return(lts.colmat)
 }
 
-###############
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Example usage
-###############
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # WARNING: contents of the directory './example-data' in your working directory 
 #   will be removed
@@ -266,11 +270,14 @@ unlink("./example-data",recursive=TRUE)
 dir.create("./example-data")
 
 # download the usa mortality zip file 
+# -->> IMPORTANT: you must supply a USA Mortality Database user name and ID <<--
 output.file <- "./example-data/USA-lifetables.zip"
 unzip.dir <- "./example-data"
-usa.user <- ""
-usa.pass <- ""
+usa.user <- "" # insert your user name
+usa.pass <- "" # inssert your password
 usa.lts.download <- download.usa(output.file,unzip.dir,usa.user,usa.pass)
+# see what happened
+usa.lts.download
 
 # parse the raw 1x1 (single year of age and single calendar year) life tables into a list
 age.period <- "1x1"
@@ -319,6 +326,12 @@ colnames(qx.b.oh)
 dim(qx.b.oh)
 View(qx.b.oh)
 
+# save the Ohio qxs in a file on disk
+save(qx.b.oh,file="./example-data/qxOh.rda")
+# read them 
+rm(list="qx.b.oh")
+load(file="./example-data/qxOh.rda")
+
 # another example: get female, 5-year, California life expectancies from 5-year age group life tables
 # parse 5x5 life tables
 age.period <- "5x5"
@@ -339,14 +352,16 @@ length(e0.f.ca)
 plot(e0.f.ca,xaxt="n")
 axis(1, at=seq(1,57,1),label=seq(1959,2015,1),las=2)
 
-# save the Ohio qxs in a file on disk
-save(qx.b.oh,file="./example-data/qxOh.rda")
-# read them 
-rm(list="qx.b.oh")
-load(file="./example-data/qxOh.rda")
-
-# save the whole list of life tables
-save(usa.lts,file="./example-data/usaLtsList.rda")
+# save the whole list of x1 life tables
+save(usa.lts,file="./example-data/usaLtsList1x1.rda")
 rm(list="usa.lts")
-load(file="./example-data/usaLtsList.rda")
+load(file="./example-data/usaLtsList1x1.rda")
 names(usa.lts)
+
+save(usa.lts.5x5,file="./example-data/usaLtsList5x5.rda")
+rm(list="usa.lts.5x5")
+load(file="./example-data/usaLtsList5x5.rda")
+names(usa.lts.5x5)
+
+# delete directory './example-data'; e.g. to upload to Github!
+# unlink("./example-data",recursive=TRUE)
